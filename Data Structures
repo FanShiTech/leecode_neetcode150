@@ -1,0 +1,1013 @@
+ ********************
+  Arrays and Strings
+ ********************
+https://www.geeksforgeeks.org/complexity-cheat-sheet-for-python-operations/
+
+        array/list
+O(1)  ------   append(), pop(), index(), len(), modifying an element
+O(n) --------    insertion and deletion not from end, checking if element exits, iteration, reverse
+O(n log n ) -----  sort()
+O(y-x) --------   slice
+
+
+difference between array and dynamic array ---------variable size
+what is the corresponding built-in data structure of array and dynamic array
+how to perform basic operations in array and dynamic array ( initialization, access, modification, iteration, sort, etc)
+
+array : access randomly , fixed capacity , contiguous memory location
+
+
+--------------------------------------------------------------------------------
+Strings
+
+an array of unicode characters
+immutable
+
+
+
+Two Points
+
+Constraints: in-place
+
+use two pointers: one is still used for the iteration while the second one always points at the position for next addition.
+
+
+sliding window:
+1) it is iterables with ordered elements
+2) subarrays
+    1) the the array has a length n, then there are n subarrays of length 1. then, there are n - 1 subarrays off length 2, etc
+    2) sliding window algorithms run in linear time, O(1)
+    3) amortized analysis. ex: a while loop within a for loop , it will never exceed for loop n
+    4) if a problem asks for the number of subarrays that fit some constraint, we use sliding window
+
+ ************************ Example ****************************************
+ def find_length(nums, k):
+    left = curr = ans = 0
+    for right in range(len(nums)):
+        curr += nums[right]
+        while curr > k:
+            curr -= nums[left]      #<---------   you have to maintain the constraint
+            left += 1
+        ans = max(ans, right - left + 1)
+
+    return ans
+*******************************************************************
+
+***************
+Linked List   *
+***************
+
+1) linear data structure
+2) the memory is spread across the memory
+
+
+Singly Linked List
+1) singly linked list
+    each node contains the value and a reference field to link to the next node
+    usually head node represents the whole list
+    to traverse , access the list , it will be O(N) TC
+    insertion and deletion are O(1) TC
+
+    add:
+        add a new node after a given node "prev"
+            1. initialize a new node "cur" with the given value
+            2. link the "cur.next" to "prev.next"
+            3. link the "prev.next" to "cur"
+
+        add a node at the beginning
+            1. initialize a new node "cur"
+            2. link the new node to original head node "head"
+            3. assign "cur" to " head"
+
+    delete:
+        delete the first node
+            1. assign the next node to the "head"
+
+2) doubly linked list
+    unable to access a random position in constant time, have to traverse from the head to get ith node
+
+    add [ TC: O(1) ] :
+        insert a new node "cur" after an existing node "prev"
+           link "cur" with "prev" and "next"
+           re-link "prev" and "next" with "cur"
+    deletion [ TC: O(1) ]:
+        link prev.next with cur.next
+        re-link cur.next with c
+
+
+***********  Singly Linked List  -----   Doubly Linked List **********************
+
+All: not able to access the data at a random position in O(1)
+ALL: add a newNode AFTER given node or at THE BEGINNING of the list in O(1)
+ALL: delete the first node in O(1)
+    Singly Linked List : there is no prev node, so will have to traverse all the necessary node before deleting the given node. O(N)
+    Doubly Linked List: always O(1)
+ALL: search a node, O(N)
+
+
+
+
+technique:
+
+two pointers
+1) if there is no cycle, the fast pointer will stop at the end of the linked list
+2) if there is a cycle, the fast pointer will eventually meet the slow pointer
+
+tips
+1) always examine if the node is null before you call the next field
+2) carefully define the end condition of the loop
+3) if there is no cycle, the fast pointer takes N/2 times. if there is a cycle, the fast pointer takes M time, aas M is the length of the cycle in the list
+
+
+
+*************** Sorting *************
+*************************************
+Concepts:
+ 1) inversions: an inversion in a sequence is defined as a pair of elements that out of order with respect to the ordering relation
+ 2) stability: it will preserve the order of equal elements
+
+
+Comparison:
+    Selection Sort, TC: O(N^2) , SC: O(1)
+    Bubble Sort
+        sort two adjacent elements
+        TC: O(N^2) w, a; SC: O(1)
+
+        def bubble(nums):
+            has_swapped = True
+            while has_swapped:
+                has_swapped = False
+                for i in range(len(nums) - 1):
+                    if nums[i] > nums[i+1]:
+                        nums[i], nums[i+1] = nums[i+1], nums[i]
+                        has_swapped = True
+
+
+    Insertion Sort:
+        TC: O(N^2), SC: O(1)
+
+        def insertion_sort(nums):
+            for i in range( 1, len(nums)):
+                curr = i
+                while curr > 0 and nums[ curr-1 ] > nums[curr]:
+                    nums[curr], nums[curr-1] = nums[curr -1 ], nums[curr]
+                    curr -=1
+
+    Heap Sort:
+        max-heap and min-heap: create an array and remove the min/max element repeatedly , in place
+        TC: O( N log N ), SC: O(1)
+        To convert it to a max-heap:
+            1) start from the end of the array ( bottom of the binary tree)
+            2) two cases of a node:
+                i, the node is greater than left child and right child. --- > one index before current array index
+                ii, aa child node that is greater than the current node ---> swap the current node with the child node
+            3) repeat step 2 on every node
+        advantage : faster than the other comparison based sorts on sufficiently large inputs as a consequence of the running time
+
+        def heap_sort(list):
+            def max_heap(heapSize, index):
+                left = 2 * index + 1
+                right = 2 * index + 2
+                largest = index
+
+                if left < heapSize and list[left] > list[largest]:
+                    largest = left
+                if right < heapSize nd list[right] > list[largest]:
+                    largest = right
+                if largest != index:
+                    list[index] , list[largest] = list[largest], list[index]
+                    max_heap(heapSize, largest)
+
+            for i in range(len(list) // 2 - 1, -1,-1):
+                max_heap(len(list),i)
+
+            for i in range(len(list)-1, 0, -1):
+                list[i], list[0], = list[0], list[i]
+                max_heap(i,0)
+
+ Non-Comparison Based Sorts
+    Counting Sort
+        TC: O(N+K), SC: O(N)
+        Properties: each element in the array A is between 0 and N-1; No element is repeated
+        good for the small integer input
+
+
+        def counting_sort(nums):
+            K = max(nums)
+            counts = [0] * (k+1)
+            for e in nums:
+                counts[e]+=1
+
+            start = 0
+            for i, count in enumerate(counts):
+                counts[i] = start
+                start+=count
+
+            sortL = [0]*len(nums)
+
+            for e in nums:
+                sortL[counts[e]] = elem
+                counts[e]+=1
+
+
+    Radix Sort:
+        TC: O(N+K), SC:O(N+K)
+        an extension of counting sort, it works well with collections of strings and large integers
+        LSD, least Significant Digit
+            strats with the rightmost, least significant digit of each integer/string, and perform a counting sort
+            ex: 256, 6 is the rightmost
+
+            if numbers in the array have different length, the leftmost in smaller numbers will be treated as 0
+            in the string, we pad the smaller length with special characters that are treated as the minimum values in an alphabet until the smaller length strings match the length of the longest string
+
+    Bucket Sort
+        TC: O(N+K), SC O(N+K)
+        to place every element into a bucket where each bucket accepts a range of values; then each bucket using some sort
+        of sorting algorithm and the output of the buckets are put together to create one sorted list
+
+        to calculate the size of each bucket: max( 1, ( (max(list) - min(list)) / k ) where k is the number of the bucket
+
+
+************************************
+*********      Heap      ***********
+************************************
+
+
+
+each element additionally has a "priority" associated with it
+
+a Heap is not a Priority Queue, but a way to implement a Priority Queue.
+
+implementing the priority queue with Heap will allow both insertion and deletion to have a time complexity of O (log N), SC: 0(1)
+and The maximum/minimum value in the Heap can be obtained with O(1) time complexity.
+
+Heap is: a complete binary tree, the value of each node must be no greater than (or no less than) the value of its child nodes.
+    complete binary tree: all the elements must lean toward the left, the last element might not have a right sibling
+
+    1) Max Heap: Each node in the Heap has a value no less than its child nodes. Therefore, the top element (root node) has the largest value in the Heap.
+    2) Min Heap: Each node in the Heap has a value no larger than its child nodes. Therefore, the top element (root node) has the smallest value in the Heap.
+
+Heap insertion / deletion:
+    when you insert/delete a node, you have to follow the proprieties, and swap the position if needed until the node is appropriate added
+    Every node's parent node is : curr node index // 2, and its left child is: curr node index * 2. the right child is curr node * 2 + 1
+    to determine the leaf node, we will know that if the curr node index > n / 2 then it is the leaf node where n is the total number of the node
+    usually the index 0 is the number of total elements in the tree
+
+    Min heap implementation  //  you can also use built-in function heapq
+    heapq stores the root node at index 0, only has min-heap , but you can cover it to max-heap. to do so, we change the value of elements to " - ", then use heapify
+    to store the element, finally we will do " "- cur.val * -1" to get its original data
+    Heapq: construct             TC:O(N)     | SC: O(1)
+            insert               TC:O(log N) | SC: O(1)
+            delete               TC:O(log N) | SC: O(1)
+            get top node           TC: O(1)  | SC: O(1)
+            delete top node     TC:O (log N) | SC: O(1)
+
+class MinHeap:
+    def __init__(self, heapSize):
+
+        self.heapSize = heapSize # heapSize records the size of the array
+        self.minheap = [0] * (heapSize + 1) # realSize records the number of elements in the Heap
+        self.realSize = 0
+
+
+    def add(self, element):
+        self.realSize += 1
+
+        if self.realSize > self.heapSize:
+            print("Added too many elements!")
+            self.realSize -= 1
+            return
+
+        self.minheap[self.realSize] = element # Add the element into the array
+
+        index = self.realSize # Index of the newly added element
+
+
+
+        # index of the parent node of any node is [index of the node / 2]
+        # index of the left child node is [index of the node * 2]
+        # index of the right child node is [index of the node * 2 + 1]
+
+        parent = index // 2
+
+        while (self.minheap[index] < self.minheap[parent] and index > 1):   # If the newly added element is smaller than its parent node,
+            self.minheap[parent], self.minheap[index] = self.minheap[index], self.minheap[parent]
+            index = parent
+            parent = index // 2
+
+         # Get the top element of the Heap
+        def peek(self):
+            return self.minheap[1]
+
+
+        def pop(self):
+            # If the number of elements in the current Heap is 0,
+            # print "Don't have any elements" and return a default value
+            if self.realSize < 1:
+                print("Don't have any element!")
+                return sys.maxsize
+            else:
+                # When there are still elements in the Heap
+                # self.realSize >= 1
+                removeElement = self.minheap[1]
+                # Put the last element in the Heap to the top of Heap
+                self.minheap[1] = self.minheap[self.realSize]
+                self.realSize -= 1
+                index = 1
+                # When the deleted element is not a leaf node
+                while (index <= self.realSize // 2):
+                    # the left child of the deleted element
+                    left = index * 2
+                    # the right child of the deleted element
+                    right = (index * 2) + 1
+                    # If the deleted element is larger than the left or right child
+                    # its value needs to be exchanged with the smaller value
+                    # of the left and right child
+                    if (self.minheap[index] > self.minheap[left] or self.minheap[index] > self.minheap[right]):
+                        if self.minheap[left] < self.minheap[right]:
+                            self.minheap[left], self.minheap[index] = self.minheap[index], self.minheap[left]
+                            index = left
+                        else:
+                            self.minheap[right], self.minheap[index] = self.minheap[index], self.minheap[right]
+                            index = right
+                    else:
+                        break
+                return removeElement
+
+
+
+1) Heap Sort
+    the key idea: 1) building a heap from an unsorted array through a "bottom-up heapification"  2) using the heap to sort the input array
+    max-heap, the parent node index is i, the left child is 2*i + 1, the right child is 2*i + 2, where the root node index is at 0
+
+2) Top K problem
+    Approach 1
+        top K largest elements
+            1) construct a Max heap. 2) add all elements 3) traversing and deleting the top element and store the value into result array, until we removed the K largest element
+        top K smallest elements
+            1) construct a Min heap. rest is the same
+        TC: O( K + log N + N) : construct a heap requires O(N) , remove from the heap requires O(log N), do K times
+        SC: O(N)
+
+
+    Approach 2
+        top K largest elements
+            1) construct a Min Heap with size K. 2) add all elements 3) when there are k elements in the Min heap, compare the current element with the top element of the heap
+            4) if the curr node is no larger than the top node, drop it and move to the next node. 5) if the cur node is larger than the top node, delete the top node and add the curr node to the min heap
+            6) repeat 2, 3 until all elements haave been iterated
+
+        top k smallest elements
+            1 construct a Max heap with size K. 2) same 3) same 4)  If the current element is no smaller than the top element of the Heap, drop it and proceed to the next element.
+            5) If the current element is smaller than the top element of the Heap, delete the top element of the Heap, and add the current element to the Max Heap.
+            6) Repeat Steps 2 and 3 until all elements have been iterated.
+
+        TC: O( N log N) SC: O(N)
+
+3) The K-th Element
+    Approach 1
+        k - th largest element
+            1) construct a Max Heap. 2) add all elements 3) traversing and deleting the top element, until we find K-th largest element
+        k - th smallest element
+            1) construct a Min heap. the rest is the same
+        TC: O( K log N + N ). SC: O(N)
+
+     Approach 2
+        k - th largest element
+            1) construct a Min heap with size K. 2) add all elements 3) when there a K elements in the Min heap, compare the current node with the top node
+                if the curr node < top node, drop the curr node, move to next
+                if the curr node > top node, delete the top node and add curr node to the Min heap
+            4) repeat 2 , 3 until all elements have been iterated
+
+        k - th smallest element
+            1) construct a Min Heap 2) same 3) same idea
+            4 same
+            TC: O( N log N) SC: O(N)
+
+************************************
+******* Queue and Stack ************
+************************************
+
+Queue
+1) first in first out
+    enqueue: add a new element at the back
+    dequeue: delete a new element at the front
+2) circular queue
+    use fixed-size array and two pointers, we can reuse the wasted storage
+
+3) one common application of BFS is to find the shortest path from the root node to the target node, and we can use queue to solve it
+
+Stack
+1) last-in-fast-out
+    new element will always added at the end, and remove the last element
+2) use stack with DFS, can find the path from the root node to the target.
+    first path you found in the DFS may not be the shortest one
+
+    template
+    dfs ( curr, target)
+        visit = set()
+        for (next:  each neighbor of curr)
+            if next is not in visit
+                visit.add(next)
+                return if dfs(curr, target) == true
+        return false
+
+
+****************************************************
+*****************  Binary Tree *********************
+****************************************************
+
+1) each node has at most two children
+
+                        F
+                       /\
+                      B  G
+                     /\  /\
+                    A  D   I
+                       /\  /\
+                      C  E H
+
+      Preorder : F,B,A,D,C,E,G,I,H    root, left, right
+      Inorder:   A,B,C,D,E,F,G,H,I    left root right (bottom-up)
+      Postorder: A,C,E,D,B,H,I,G,F     left, right root, (bottom-up)
+
+      Level order Traversal , uses BFS with queue . : [F], [B, G], [A, D, I], [C, E, H]
+
+2) To solve Tree problems recursively
+
+    top - down solution
+        in each recursive call, we will visit the node first to come up with some values, and pass these values to its children when calling the function recursively
+        preorder traversal
+
+    bottom - up solution
+        in each recursive call, we will firstly call the function recursively for all the children nodes and then come up with the answer according to the returned values and the value of the current node
+        postorder
+        
+
+
+
+****************************************************
+*****************  Recursion   *********************
+****************************************************
+
+1) guidelines:
+    F(x), where x is the input of the function which also defines the scope of the problem
+
+    in the F(x)
+
+        base case
+        call function recursively
+
+
+2) memorization
+    To eliminate the duplicate calculation
+    an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again
+
+3) D&C Introduction
+    divide and conquer: break the problem into 2 or more problems of the same or related type
+
+    one of the classic example of D&G is merge sort algorithm
+        approach: top-down and bottom-up:
+            1)divide the given unsorted lis into several lists
+            2)sort each one recursively
+            3)merger the sorted list
+        TC: O( N log N ), where N is the length of the input list
+            processes: dividing --- O(N)
+                        merge --- O(N)
+                        binary search --- O (long N)
+        SC: O(N)
+
+        Problems:
+            BST:
+                all values on the left side subtree of a node should be less than the value of the node; right side is greater than the node
+                both left and right must be BST
+
+            Search a 2D matrix:
+                divide the matrix into 4 ssub-matrices by choosing a pivot point based on a row and a column
+                recursively look into each sub-matrix to search for the desired target
+                stop searching once we found the target
+
+                hence: if the target == pivot, found ! if target < pivot, discard the bottom-right sub matrix
+
+            quick sort:
+                select a valur from the list as a pivot. one sublist contains all the values that are less than pivot another one is greater than pivot---aka partitioning
+                recursively sort sublists
+                concatenate
+
+4) Backtracking
+    backpacking is a general algorithm for finding all ( or some ) solutions to some computational problems. in those potential solutions, if the solution are not valid one, it should be abandoned
+    usually can solve tree problems, 2d matrix
+
+
+3) Recursion - time complexity
+    O(T) = R * O(S),
+           the number of recursion invocations * the time complexity of calculation
+           how many times                          the time complexity of the single calculation
+
+4)  Recursion - space complexity
+    two parts:
+        recursion related : the memory is costed directly by the recursion
+                once the function call is completed, the program must know where to return to
+                the parameters that are passed to the function call
+                the local variables within the function call
+
+                the function calls chain up successively until they reach a base case means the space that is used for each call is accumulated. but once the function call is done, the space will be free
+                be aware of stack overflow
+
+        non-recursion related : the memory is costed not directly by the recursion
+
+
+
+
+****************************************************
+*****************  Hash Table   ********************
+****************************************************
+
+1) two types :
+    set : no repeated values
+        add()
+        remove()
+        clear()
+    map : key, value pair
+
+2) hash function
+    depend on the range of key values and the number of buckets
+    will encounter collision problem
+        solutions:
+            separate chaining
+            open addressing
+            2-choice hashing
+
+
+
+****************************************************
+************* Binary Search Tree  ******************
+****************************************************
+
+1) The value in each node must be greater than (or equal to) any values in its left subtree but less than (or equal to) any values in its right subtree.
+
+2) Inorder:
+    inorder:
+        inorder(root.left) + root.val + inorder(root.right)
+    inorder --- successor
+        def successor(root, TreeNode) -> TreeNode:
+            root = root.right
+            while node.left:
+                root = root.right
+            return root
+
+    inorder --- predecessor
+        def predecessor(root, TreeNode) -> TreeNode:
+            root = root.let
+            while node.right:
+                root = root.left
+            return root
+
+
+****************************************************
+************* Decision Tree  ***********************
+****************************************************
+
+1) is applied in operating research, data mining, and machine learning
+2) can be used to solve the problems of classification and regression in the subdomain of supervised machine learning
+3) a decision tree for classification is a special form of binary tree, which is used as a classifier. there are two types of node in decision tree:
+    leaf node
+    decision node: non-leaf node
+
+4) the decision tree tests the condition
+5) algorithm
+    follows the approach of divide-and-conquer
+    recursively splitting the input samples into two subgroups with decision node
+    at the end, each of samples is assigned to a leaf node]
+
+
+    pseudo code:
+        TreeNode build_decision_tree([samples]) {
+
+  // base cases:
+      - the target attributes of the samples are uniform
+      - the current depth of tree exceeds the max_tree_depth
+      - the number of samples is less than the minimal_node_size
+
+          // 1). we create a leaf node and return.
+          if (any of the above cases holds) {
+            leaf_node = create_leaf_node([samples]);
+            return leaf_node;
+          }
+
+          // 2). find the best attribute to split on, (also the best value to split)
+          feature_to_split, split_value = find_best_split([samples]);
+
+          // 3). split the samples list into two sublists
+          left_samples, right_samples = split([samples], feature_to_split, split_value);
+
+          // 4). create a decision node.
+          new_node = create_node(feature_to_split, split_value);
+
+          // 5). for each sublist, recursively call the function to create the subtrees.
+          new_node.left = build_decision_tree(left_samples);
+          new_node.right = build_decision_tree(right_samples);
+
+          // 6). return the newly-created node
+          return new_node;
+}
+
+
+
+****************************************************
+******************   Graph   ***********************
+****************************************************
+
+
+Graph” is a non-linear data structure consisting of vertices and edges.
+
+The main idea of a “disjoint set” is to have all connected vertices have the same parent node or root node, whether directly
+or indirectly connected. To check if two vertices are connected, we only need to check if they have the same root node.
+
+1) Types of graphs
+  important ones:
+
+        undirected graphs : the edges between any two vertices in an "undirected graph", do not have a direction, indicating a two-way relationship. A----B
+        directed graphs:  the edges between any two vertices in an "directed graph" graph are directional.   A -> B
+        weighted graphs: ech edge in a weight graph has an associated weight. the weight can be of any metric, such as time, distance, size , etc. A --1.5--B
+
+2) vertex , edge, path,
+    path length : the number of edges in a path.
+        cycle: a path where the starting point and endpoint are the same vertex
+            negative weight: if the sum of the weights of all edges of a cycle is a negative value
+                connectivity: if there exists at least one path between two vertices, these two vertices are connected.
+                    Degree of a Vertex: the term “degree” applies to unweighted graphs. The degree of a vertex is the number of edges connecting the vertex.
+                        In-Degree: “in-degree” is a concept in directed graphs. If the in-degree of a vertex is d, there are d directional edges incident to the vertex.
+                            Out-Degree: “out-degree” is a concept in directed graphs. If the out-degree of a vertex is d, there are d edges incident from the vertex.
+
+3) how could we quickly check whether two vertices are connected ?
+    Disjoint Set
+        The primary use of disjoint sets is to address the connectivity between the components of a network.
+        The “network“ here can be a computer network or a social network. For instance, we can use a disjoint set to
+        determine if two people share a common ancestor.
+
+
+        two important functions in a “disjoint set”"
+            The find function finds the root node of a given vertex.
+            The union function unions two vertices and makes their root nodes the same.
+
+        ways to implement the disjoint set
+             implementation with Quick Find, the find function has time complexity O(1),   Union function is O(N)
+             implementation with Quick Union, the find function's time complexity is worse than union function
+
+        we will need array value to store parents' node, and array index as the child node of its parents' node
+        we have to trace back the root node, as the child node value and parent's value are the same
+        in the end, all the child nodes will be assigned the same parent node if they belong to the same set
+
+        TC: Union - Find constructor: O(N) , find(): O(1); Union(): O(N), Connected() : O(1)
+        SC: O(N)
+            # UnionFind class
+                class UnionFind:
+                    def __init__(self, size):
+                        self.root = [i for i in range(size)]
+
+                    def find(self, x):
+                        return self.root[x]
+
+                    def union(self, x, y):
+                        rootX = self.find(x)
+                        rootY = self.find(y)
+                        if rootX != rootY:
+                            for i in range(len(self.root)):
+                                if self.root[i] == rootY:
+                                    self.root[i] = rootX
+
+                    def connected(self, x, y):
+                        return self.find(x) == self.find(y)
+
+
+
+
+            #QuickUnion
+             TC: Quick Union - Find constructor: O(N) , find(): O(N); Union(): O(N), Connected() : O(N)
+             SC: O(N)
+            # UnionFind class
+                class UnionFind:
+                    def __init__(self, size):
+                        self.root = [i for i in range(size)]
+
+                    def find(self, x):
+                        while x != self.root[x]:
+                            x = self.root[x]   ### it changes the parent value
+                        return x
+
+                    def union(self, x, y):
+                        rootX = self.find(x)
+                        rootY = self.find(y)
+                        if rootX != rootY:
+                            self.root[rootY] = rootX
+
+                    def connected(self, x, y):
+                        return self.find(x) == self.find(y)
+
+
+
+            A better way to optimize Union:  union by rank---optimize union()
+                rank --- ordering by specific criteria , which the highest of the tree branch
+
+             TC:  Find constructor: O(N) , find(): O(log N); Union(): O(log N), Connected() : O(log N)
+             SC: O(N)
+
+             # UnionFind class
+                class UnionFind:
+                    def __init__(self, size):
+                        self.root = [i for i in range(size)]
+                        self.rank = [1] * size
+
+                    def find(self, x):
+                        while x != self.root[x]:
+                            x = self.root[x]
+                        return x
+
+                    def union(self, x, y):
+                        rootX = self.find(x)
+                        rootY = self.find(y)
+                        if rootX != rootY:
+                            if self.rank[rootX] > self.rank[rootY]:
+                                self.root[rootY] = rootX
+                            elif self.rank[rootX] < self.rank[rootY]:
+                                self.root[rootX] = rootY
+                            else:
+                                self.root[rootY] = rootX
+                                self.rank[rootX] += 1
+
+                    def connected(self, x, y):
+                        return self.find(x) == self.find(y)
+
+
+
+             # path compression --- optimize find() for QuickUnion
+             TC:  Find constructor: O(N) , find(): O(log N); Union(): O(log N), Connected() : O(log N)
+             SC: O(N)
+             class UnionFind:
+                def __init__(self, size):
+                    self.root = [i for i in range(size)]
+
+                def find(self, x):
+                    if x == self.root[x]:
+                        return x
+                    self.root[x] = self.find(self.root[x])
+                    return self.root[x]
+
+                def union(self, x, y):
+                    rootX = self.find(x)
+                    rootY = self.find(y)
+                    if rootX != rootY:
+                        self.root[rootY] = rootX
+
+                def connected(self, x, y):
+                    return self.find(x) == self.find(y)
+
+4) Depth-First Search
+    find all of its vertices and how can we find all paths between two vertices
+    TC: O(V+E) , where V is the number of vertices, and E is number of edges
+    SC: O(V)
+    use stack
+
+    find all vertices:  use stack = [], once the element is pop() , labels it as visited, then from there to find next possible vertices and push() them in the stack,
+                        then pop() the top one, labels it as visited, ........ until there is no vertices
+
+    find all paths:  use stack=[] , almost the same ass finding all vertices
+
+
+    HENCE:  How to list all adjacency nodes
+
+ 5) Breadth-First Search
+    the most advantageous use case of BFS is o find the shortest path (only in unweighted graphs) between two vertices in a graph where all edges have equal and positive weights ( without traversing all paths)
+    use queue
+
+    TC: O(V+E) , where V is the number of vertices, and E is number of edges
+    SC: O(V)
+
+ 6) Minimum Spanning Tree
+    spanning tree : a connected subgraph in an undirected graph where all vertices aare connected with minimum number of edges. an undirected graph can have multiple spanning tree
+    minimum spanning tree is a spanning tree with the minimum possible total edge weight in a “weighted undirected graph”. a “weighted undirected graph” can have multiple minimum spanning trees.
+    TC: O( E log E), E represents the number of edges.
+    SC: O(V) * v
+
+    tree that connects all vertices into one component, tree has no cycle, overall spanning trees, the sum of edges weights in tree is minimized
+
+    cut property
+        in Graph theory, a “cut” is a partition of vertices in a “graph” into two disjoint subsets.
+        a crossing edge is an edge that connects a vertex in one set with a vertex in the other set
+
+    a weighted of edges of cut set is smaller than any other edges, than this edge belongs the minimum spanning tree
+
+
+    Kruskal Algorithm: produces a MST
+        I, ascending sorted all edges by their weights
+        II, add edges in that order into the minimum spanning tree and skip the edges that would produce cycles
+        III, repeat step 2 until n-1 edges
+
+
+    Prom's algorithm
+        two sets: one's visited and another one is not
+        starting from an arbitrary vertex, and grows the minimum spanning tree by adding one edge at a time
+
+
+7) Single Source Shortest Path
+    for weighted graph
+
+    Dijkstra's algorithm:  single-source shortest path, non-negative weights
+        “Dijkstra's Algorithm” uses a “greedy approach”. Each step selects the “minimum weight” from the currently reached vertices to find the “shortest path” to other vertices.
+
+    Bellman-Ford algorithm: single-source shortest path, including negative or non-negative weights
+        In a “graph with no negative-weight cycles” with N vertices, the shortest path between any two vertices has at most N-1 edges.
+        In a “graph with negative weight cycles”, there is no shortest path.
+
+
+
+****************************************************
+******************  N-ary Tree  ********************
+****************************************************
+
+                    A                  Preorder: A,B,C,E,F,D,G
+                  / | \                Postorder: B, E, F, C, G, D, A
+                B   C   D              Level-order: A,B,C,D,E,F,G
+                   / \  |
+                  E   F G
+1)
+
+ Preorder: check root, add the root into a stack, pop() the stack, check if it has children or not. if it has children, append() the children in the backwards order
+ postorder: check root, append(root), while the stack is true, pop() the stack and append() in the result[], if the value has children, append() into the stack
+ level-order: check the root, append() root in the stack A, while stack is true , create another stack B[], result[] append empty[], append(the stack A) stack B extend( its children)
+
+2)  Recursion
+
+    Top-down
+        Top-down" means that in each recursion level, we will visit the node first to come up with some values, and pass
+        these values to its children when calling the function recursively.
+
+        1. return specific value for null node
+        2. update the answer if needed                              // answer <-- params
+        3. for each child node root.children[k]:
+        4.      ans[k] = top_down(root.children[k], new_params[k])  // new_params <-- root.val, params
+        5. return the answer if needed                              // answer <-- all ans[k]
+
+
+    Bottom-up
+        "Bottom-up" means that in each recursion level, we will firstly call the functions recursively for all the children
+        nodes and then come up with the answer according to the return values and the value of the root node itself.
+
+        1. return specific value for null node
+        2. for each child node root.children[k]:
+        3.      ans[k] = bottom_up(root.children[k])    // call function recursively for all children
+        4. return answer                                // answer <- root.val, all ans[k]
+
+
+
+****************************************************
+******************  Trie     ***********************
+****************************************************
+
+a special form of a N-ary Tree
+
+is used to store strings; each trie node represents a string(prefix). each node might have several children nodes while the paths to different
+children nodes represents different characters. and the strings the child nodes represent will be the original string represented by the node itself plus the
+character on the path.
+
+one important property of Trie is that all the descendants of a node have a common prefix of the string associated with that node
+
+
+
+1) we can use array to store children nodes
+2) we can use map to store children nodes
+
+
+3) Insertion
+    1. Initialize: cur = root
+    2. for each char c in target string S:
+    3.      if cur does not have a child c:
+    4.          cur.children[c] = new Trie node
+    5.      cur = cur.children[c]
+    6. cur is the node which represents the string S
+
+4) Search
+    1. Initialize: cur = root
+    2. for each char c in target string S:
+    3.   if cur does not have a child c:
+    4.     search fails
+    5.   cur = cur.children[c]
+    6. search successes
+
+
+
+****************************************************
+****************** Bit Manipulation     ************
+****************************************************
+
+1) base-x numeral system
+    the number on each digit will be carried over when it reaches X
+    The actual value of a base-X number is determined by each digit and its location.
+    The weight of the m^th digit counting from right to left
+    the smallest value of m is 0
+    the weight of the n^th digit counting from left to right in the fractional part is X^-n and the smallest value of n is 1
+
+    ex: 123.45
+        1 * 10^2 + 2 * 10^1 + 3 * 10^0 + 4 * 10^-1 + 5 * 10^-2
+        base 10
+        10 ^x , where x >= 0 ---fraction--- 10 ^-x , where x >= 1
+
+    in CS, the binary system is commonly used.
+        0,1,2,3,4,5,6,7---> octal
+        0, 1,2,3,4,5,6,7,8,9,A,B,C,D,E,F ---> hexadecimal
+
+
+2) conversion between bases
+    non-decimal to decimal
+        add the weight sum of each digit
+        ex: 720.5(8) = 7 * 8^2 + 2 * 8^1 + 0 * 8^0 +5 * 8^-1
+
+    decimal to non-decimal
+        need to convert the integer part and the fractional part, separately
+        To convert the integer part, we will integer divide it by X until it reaches 0, and record the remainder each time.
+        Traversing the remainder in reverse order will give us the representation in base-X system.
+
+        to convert 50 in base-10 to base-2:
+        50 / 2 = 25 / 2 = 12 / 2 = 6 / 2 = 3 / 2 = 1 / 2 = 0
+        50 % 2 = 0, 25 % 2 = 1, 12 % 2 = 0, 6 % 2 = 0, 3 % 2 = 1, 1 % 2 = 1
+
+        ans: 50 in decimal will become 110010(2 )in binary.
+
+
+        To convert the fractional part
+        we will multiply the fractional part of the decimal number by X until it becomes
+        0 and record the integer part each time. Traversing the integer part in order will give us the representation in base-X system.
+
+        ex:  to convert the decimal number 0.6875 to binary:
+        0.6875 × 2 = 1.375 with integer 1
+        0.375 × 2 = 0.75 with integer 0
+        0.75 × 2 = 1.5 with integer 1
+        0.5 × 2 = 1 with integer 1
+
+        ans: 0.6875 in decimal will become 0.1011 (2)
+
+
+        Conversion between other bases
+
+        The common practice is to convert between non-base-10 numbers to convert to decimal first and then convert to the
+        target base. Under certain circumstances, we can perform the conversion without going through decimal.
+
+        We can group digits in a binary number 101110010 (2) in groups of three as 101|110|010, or in groups of four as 1|0111|0010,
+        which can be converted to 562 (8) in octal and 172 (16)in hexadecimal.
+
+3) Bitwise operator
+    AND ---> & : for each binary bit, when the corresponding bits of both numbers are 1 , the result is 1; otherwise, the result is 0
+            0 & 0 = 0,    0 & 1 = 0 ,    1 & 1 = 1
+
+    OR ---> | : for each binary bit, when the corresponding bits of both numbers are 0, the result is 0, otherwise, the result is 1
+            0 | 0 = 0,    0 | 1 = 1,     1 | 1 = 1
+
+    XOR ---> ^ : for each binary bit, when the corresponding bits of the two numbers are the same, the result is 0, otherwise the result is 1
+            0 ^ 0 = 0,    1 ^ 1 = 0,     1 ^ 0 = 1
+
+    ~ : flip each binary bit of a number: 0 becomes 1 and 1 becomes 0
+            ~0 = 1       ~1 = 0
+
+4) shift operation
+    << --->  left shit: In a left shift operation, all binary bits are shifted to the left by several bits, the high bits are discarded,
+                        and the low bits are filled with 0.
+
+
+    >> ---> right shit: n a right shift operation, all binary bits are shifted to the right by several bits, the low bits are discarded,
+                        and how the high bits get filled differs between arithmetic shift and logical shift:
+
+                            When shifting right arithmetically, the high bits are filled with the highest bit;
+                            When shifting right logically, the high bits are filled with 0.
+
+
+    ex: 29: 00011101
+                << : by 2, 01110100 (116)
+        50: 00110010
+                >> : by 1, 00011001 (25)
+                >> : by 2, 00001100 (12)  for non-negative numbers, the arithmetic and logical shift are identical
+
+        -50: 11001110
+               >> : by 2, 11110011 (-13) arithmetic
+               >> : by 2, 00110011 (51) logical
+
+
+
+
+The left shift operation corresponds to the multiplication. Shifting a number to the left by k bits is equivalent to multiplying the number by 2^k
+
+When the multiplier is not an integer power of 2, the multiplier can be split into the sum of the integer powers of 2.
+
+When the multiplier is not an integer power of 2, the multiplier can be split into the sum of the integer powers of 2.
+            For example, a × 6 is equivalent to ( a << 2 ) + ( a << 1 )
+
+The arithmetic right shift operation corresponds to the division operation. Shifting a number to the right by k bits is equivalent to dividing the number by 2^k.
+            For example, right shifting 50 by 2 bits results in 12, which is equivalent to 50 / 4, rounded down.
+
+
+
+
+****************************************************
+****************** Binary Search   *****************
+****************************************************
+
+
