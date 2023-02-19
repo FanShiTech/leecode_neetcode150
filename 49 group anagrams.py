@@ -4,6 +4,10 @@ Given an array of strings strs, group the anagrams together. You can return the 
 Input: strs = ["eat","tea","tan","ate","nat","bat"]
 Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
 
+ Defaultdict is a sub-class of the dictionary class that returns a dictionary-like object.
+ The functionality of both dictionaries and defaultdict are almost same except for the fact that defaultdict never raises a KeyError.
+ It provides a default value for the key that does not exists.
+
 
 
 """
